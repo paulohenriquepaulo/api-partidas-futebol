@@ -1,6 +1,6 @@
 package com.api.brasileirao.controller;
 
-import com.api.brasileirao.dto.ClubeResponseDTO;
+import com.api.brasileirao.dto.BaseResponseDTO;
 import com.api.brasileirao.dto.ClubeResquestDTO;
 import com.api.brasileirao.serivce.ClubeService;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/clube")
-public class ClubeController {
+public class ClubeController extends BaseController{
 
 
     private final ClubeService clubeService;
@@ -20,13 +20,13 @@ public class ClubeController {
     }
 
     @PostMapping
-    public ResponseEntity<ClubeResponseDTO> cadastrar(@RequestBody ClubeResquestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(clubeService.cadastrar(dto));
+    public ResponseEntity<BaseResponseDTO> cadastrar(@RequestBody ClubeResquestDTO dto) {
+        return created(clubeService.cadastrar(dto));
     }
 
     @PatchMapping
-    public ResponseEntity<String> cadastrar(@RequestParam Long id, @RequestBody ClubeResquestDTO dto) {
-        return ResponseEntity.status(HttpStatus.OK).body(clubeService.editar(id, dto));
+    public ResponseEntity<BaseResponseDTO> editar(@RequestParam Long id, @RequestBody ClubeResquestDTO dto) {
+        return ok(clubeService.editar(id, dto));
     }
 
     @DeleteMapping

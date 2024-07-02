@@ -18,7 +18,7 @@ public class ClubeService {
     private final ClubeRepository clubeRepository;
     
     private final ClubeMapper clubeMapper;
-    private static final  String OK = "sucesso";
+    private static final  String CLUBE_EDITADO = "Clube editado com sucesso!";
 
     public ClubeService(ClubeRepository clubeRepository, ClubeMapper clubeMapper) {
         this.clubeRepository = clubeRepository;
@@ -43,7 +43,7 @@ public class ClubeService {
         clube.setEstado(dto.getEstado());
         clube.setDataCriacao(dto.getDataCriacao());
         clubeRepository.save(clube);
-        return OK;
+        return CLUBE_EDITADO;
     }
 
     public void inativarCluebe(Long id) {
