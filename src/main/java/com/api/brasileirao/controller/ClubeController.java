@@ -28,6 +28,10 @@ public class ClubeController extends BaseController{
     public ResponseEntity<BaseResponseDTO> editar(@RequestParam Long id, @RequestBody ClubeResquestDTO dto) {
         return ok(clubeService.editar(id, dto));
     }
+    @GetMapping("/id")
+    public ResponseEntity<BaseResponseDTO> buscarPorID(@RequestParam Long id) {
+        return ok(clubeService.buscarClubePorId(id));
+    }
 
     @DeleteMapping
     public ResponseEntity inativar(@RequestParam Long id) {

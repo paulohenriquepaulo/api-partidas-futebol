@@ -35,9 +35,7 @@ public class ClubeService {
     }
 
     public String editar(Long id, ClubeResquestDTO dto) {
-        Clube clube = clubeRepository.findById(id)
-                .orElseThrow(() -> new ExceptionPersonalizada("O clube não foi encontrado", 404));
-
+        Clube clube = getCluebeID(id);
         validarInformacoesClube(dto);
         clube.setNomeClube(dto.getNomeClube());
         clube.setEstado(dto.getEstado());
@@ -46,9 +44,17 @@ public class ClubeService {
         return CLUBE_EDITADO;
     }
 
-    public void inativarCluebe(Long id) {
-        Clube clube = clubeRepository.findById(id)
+    public ClubeResponseDTO buscarClubePorId(Long id) {
+       return clubeMapper.toClubeResponseDTO(getCluebeID(id));
+    }
+
+    private Clube getCluebeID(Long id) {
+        return clubeRepository.findById(id)
                 .orElseThrow(() -> new ExceptionPersonalizada("O clube não foi encontrado", 404));
+    }
+
+    public void inativarCluebe(Long id) {
+        Clube clube = getCluebeID(id);
         if (clube.getStatusClube().equals(StatusEnum.INATIVO))
             throw new ExceptionPersonalizada("O clube já está inativado!", 400);
 

@@ -1,5 +1,6 @@
 package com.api.brasileirao.advice;
 
+import com.api.brasileirao.dto.BaseResponseDTO;
 import com.api.brasileirao.exception.ExceptionPersonalizada;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +14,22 @@ import java.util.Map;
 @ControllerAdvice
 public class AdviceException {
 
+    private static final String ERRO = "erro";
 
     @ExceptionHandler(ExceptionPersonalizada.class)
-    public ResponseEntity<Map<String, String>> exceptionPersonalizada(ExceptionPersonalizada exceptionPersonalizada) {
+    public ResponseEntity<BaseResponseDTO> exceptionPersonalizada(ExceptionPersonalizada exceptionPersonalizada) {
         Map<String, String> errors = new HashMap<>();
         errors.put("mensagem", exceptionPersonalizada.getErrors().get("mensagem"));
-        errors.put("status", String.valueOf(exceptionPersonalizada.getStatus().value()));
-        return ResponseEntity.status(exceptionPersonalizada.getStatus()).body(errors);
+        return ResponseEntity.status(exceptionPersonalizada.getStatus())
+                .body(new BaseResponseDTO(exceptionPersonalizada.getStatus().value(),ERRO, errors));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, String>> httpMessageNotReadableException(HttpMessageNotReadableException exception) {
+    public ResponseEntity<BaseResponseDTO> httpMessageNotReadableException(HttpMessageNotReadableException exception) {
         Map<String, String> errors = new HashMap<>();
         errors.put("mensagem", exception.getLocalizedMessage());
-        errors.put("status", String.valueOf(HttpStatus.BAD_REQUEST));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponseDTO(HttpStatus.BAD_REQUEST.value(), ERRO, errors));
     }
 
 
