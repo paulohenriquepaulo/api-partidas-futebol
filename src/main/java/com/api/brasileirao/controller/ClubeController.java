@@ -28,4 +28,10 @@ public class ClubeController {
     public ResponseEntity<String> cadastrar(@RequestParam Long id, @RequestBody ClubeResquestDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(clubeService.editar(id, dto));
     }
+
+    @DeleteMapping
+    public ResponseEntity inativar(@RequestParam Long id) {
+        clubeService.inativarCluebe(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

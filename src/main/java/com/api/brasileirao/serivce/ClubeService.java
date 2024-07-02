@@ -45,6 +45,17 @@ public class ClubeService {
         clubeRepository.save(clube);
         return OK;
     }
+
+    public void inativarCluebe(Long id) {
+        Clube clube = clubeRepository.findById(id)
+                .orElseThrow(() -> new ExceptionPersonalizada("O clube não foi encontrado", 404));
+        if (clube.getStatusClube().equals(StatusEnum.INATIVO))
+            throw new ExceptionPersonalizada("O clube já está inativado!", 400);
+
+        clube.setStatusClube(StatusEnum.INATIVO);
+        clubeRepository.save(clube);
+    }
+
     private void validarInformacoesClube(ClubeResquestDTO dto) {
         if (dto.getNomeClube().length() < 2) {
             throw new ExceptionPersonalizada("O nome do clube não pode ser menor que 2 letras!", 400);
