@@ -7,7 +7,6 @@ import com.api.brasileirao.exception.ExceptionPersonalizada;
 import com.api.brasileirao.mapper.ClubeMapper;
 import com.api.brasileirao.model.Clube;
 import com.api.brasileirao.repository.ClubeRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +18,7 @@ public class ClubeService {
     private final ClubeRepository clubeRepository;
     
     private final ClubeMapper clubeMapper;
+    private static final  String OK = "sucesso";
 
     public ClubeService(ClubeRepository clubeRepository, ClubeMapper clubeMapper) {
         this.clubeRepository = clubeRepository;
@@ -34,6 +34,17 @@ public class ClubeService {
         return clubeMapper.toClubeResponseDTO(novoClube);
     }
 
+    public String editar(Long id, ClubeResquestDTO dto) {
+        Clube clube = clubeRepository.findById(id)
+                .orElseThrow(() -> new ExceptionPersonalizada("O clube não foi encontrado", 404));
+
+        validarInformacoesClube(dto);
+        clube.setNomeClube(dto.getNomeClube());
+        clube.setEstado(dto.getEstado());
+        clube.setDataCriacao(dto.getDataCriacao());
+        clubeRepository.save(clube);
+        return OK;
+    }
     private void validarInformacoesClube(ClubeResquestDTO dto) {
         if (dto.getNomeClube().length() < 2) {
             throw new ExceptionPersonalizada("O nome do clube não pode ser menor que 2 letras!", 400);
