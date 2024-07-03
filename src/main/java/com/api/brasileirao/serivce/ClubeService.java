@@ -2,6 +2,7 @@ package com.api.brasileirao.serivce;
 
 import com.api.brasileirao.dto.ClubeResponseDTO;
 import com.api.brasileirao.dto.ClubeResquestDTO;
+import com.api.brasileirao.enuns.EstadoEnum;
 import com.api.brasileirao.enuns.StatusEnum;
 import com.api.brasileirao.exception.ExceptionPersonalizada;
 import com.api.brasileirao.mapper.ClubeMapper;
@@ -91,5 +92,19 @@ public class ClubeService {
         if (clubeRepository.existsByNomeClubeAndEstado(dto.getNomeClube(), dto.getEstado())) {
             throw new ExceptionPersonalizada("Já existe um clube cadastrado com esse nome para esse estado!", 409);
         }
+    }
+
+    public List<ClubeResponseDTO> buscarPorFiltro(String nome, String estadoEnum, String statusEnum) {
+        List<Clube> clubes = clubeRepository.buscarPorFiltro(nome, estadoEnum, statusEnum);
+        List<ClubeResponseDTO> clubeResponseDTOS = new ArrayList<>();
+
+        if (clubes.isEmpty())
+            throw new ExceptionPersonalizada("Nenhum clube foi encontrado", 404);
+
+        clubes.forEach(c -> {
+            ClubeResponseDTO dto = clubeMapper.toClubeResponseDTO(c);
+            clubeResponseDTOS.add(dto);
+        });
+        return clubeResponseDTOS;
     }
 }

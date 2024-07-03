@@ -2,6 +2,8 @@ package com.api.brasileirao.controller;
 
 import com.api.brasileirao.dto.BaseResponseDTO;
 import com.api.brasileirao.dto.ClubeResquestDTO;
+import com.api.brasileirao.enuns.EstadoEnum;
+import com.api.brasileirao.enuns.StatusEnum;
 import com.api.brasileirao.serivce.ClubeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,16 @@ public class ClubeController extends BaseController{
     }
 
     @GetMapping("/all")
-    public ResponseEntity<BaseResponseDTO> buscarPorID() {
+    public ResponseEntity<BaseResponseDTO> buscarALL() {
         return ok(clubeService.buscarTodos());
+    }
+
+    @GetMapping("/filtro")
+    public ResponseEntity<BaseResponseDTO> buscarPorFiltro(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String statusEnum,
+            @RequestParam(required = false) String estadoEnum) {
+        return ok(clubeService.buscarPorFiltro(nome, estadoEnum, statusEnum));
     }
 
     @DeleteMapping
