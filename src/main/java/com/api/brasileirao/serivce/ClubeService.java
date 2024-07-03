@@ -10,6 +10,8 @@ import com.api.brasileirao.repository.ClubeRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ClubeService {
@@ -60,6 +62,21 @@ public class ClubeService {
 
         clube.setStatusClube(StatusEnum.INATIVO);
         clubeRepository.save(clube);
+    }
+
+    public List<ClubeResponseDTO> buscarTodos() {
+        List<Clube> clubes = clubeRepository.findAll();
+        List<ClubeResponseDTO> clubeResponseDTOS = new ArrayList<>();
+
+        if (clubes.isEmpty())
+            throw new ExceptionPersonalizada("Nenhum clube foi encontrado", 404);
+
+        clubes.forEach(c -> {
+            ClubeResponseDTO dto = clubeMapper.toClubeResponseDTO(c);
+            clubeResponseDTOS.add(dto);
+        });
+
+        return clubeResponseDTOS;
     }
 
     private void validarInformacoesClube(ClubeResquestDTO dto) {

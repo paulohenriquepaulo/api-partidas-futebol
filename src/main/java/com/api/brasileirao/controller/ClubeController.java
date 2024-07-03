@@ -33,6 +33,11 @@ public class ClubeController extends BaseController{
         return ok(clubeService.buscarClubePorId(id));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponseDTO> buscarPorID() {
+        return ok(clubeService.buscarTodos());
+    }
+
     @DeleteMapping
     public ResponseEntity inativar(@RequestParam Long id) {
         clubeService.inativarCluebe(id);
