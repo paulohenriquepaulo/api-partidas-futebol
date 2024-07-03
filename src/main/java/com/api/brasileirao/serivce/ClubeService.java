@@ -2,12 +2,15 @@ package com.api.brasileirao.serivce;
 
 import com.api.brasileirao.dto.ClubeResponseDTO;
 import com.api.brasileirao.dto.ClubeResquestDTO;
-import com.api.brasileirao.enuns.EstadoEnum;
 import com.api.brasileirao.enuns.StatusEnum;
 import com.api.brasileirao.exception.ExceptionPersonalizada;
 import com.api.brasileirao.mapper.ClubeMapper;
 import com.api.brasileirao.model.Clube;
 import com.api.brasileirao.repository.ClubeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -94,17 +97,23 @@ public class ClubeService {
         }
     }
 
-    public List<ClubeResponseDTO> buscarPorFiltro(String nome, String estadoEnum, String statusEnum) {
+    public Page<ClubeResponseDTO> buscarPorFiltro(String nome, String estadoEnum, String statusEnum, int page) {
         List<Clube> clubes = clubeRepository.buscarPorFiltro(nome, estadoEnum, statusEnum);
-        List<ClubeResponseDTO> clubeResponseDTOS = new ArrayList<>();
-
-        if (clubes.isEmpty())
+        if (clubes.isEmpty()) {
             throw new ExceptionPersonalizada("Nenhum clube foi encontrado", 404);
+        }
 
-        clubes.forEach(c -> {
+        Pageable pageable = PageRequest.of(page, 3);
+
+        int start = Math.min((int) pageable.getOffset(), clubes.size());
+        int end = Math.min((start + pageable.getPageSize()), clubes.size());
+
+        List<ClubeResponseDTO> pagedClubes = new ArrayList<>();
+        clubes.subList(start, end).forEach(c -> {
             ClubeResponseDTO dto = clubeMapper.toClubeResponseDTO(c);
-            clubeResponseDTOS.add(dto);
+            pagedClubes.add(dto);
         });
-        return clubeResponseDTOS;
+
+        return new PageImpl<>(pagedClubes, pageable, clubes.size());
     }
 }
